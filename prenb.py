@@ -8,7 +8,7 @@ import os
 # Load the Wide ResNet 50 model, ensuring correct model name
 model = torch.hub.load('pytorch/vision:v0.10.0', 'wide_resnet50_2', pretrained=True)
 
-image_dir = "../CASIA_WebFace"
+image_dir = "data/CASIA_WebFace/images/bonafide/raw/"
 image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith((".jpg", ".jpeg", ".png"))]
 
 def load_and_preprocess(img_path, scale):
@@ -42,7 +42,7 @@ for img_path in image_paths:
     for scale in [1, 2]:
         normalized_img = load_and_preprocess(img_path, scale)
         features = model(normalized_img.unsqueeze(0)).squeeze(0)
-        feature_path = f"processed/feature_scale_{scale}/{image_name.replace('.jpg', '.pt')}"
+        feature_path = f"../../../feature_scale_{scale}/{image_name.replace('.jpg', '.pt')}"
         torch.save(features, feature_path)
 
 
