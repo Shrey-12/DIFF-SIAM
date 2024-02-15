@@ -1,14 +1,15 @@
 
 import torch
+import torchvision.models as models
 import torchvision.transforms as transforms
 from retinaface import RetinaFace
 import cv2
 import os
 
 # Load the Wide ResNet 50 model, ensuring correct model name
-model = torch.hub.load('pytorch/vision:v0.10.0', 'wide_resnet50_2', pretrained=True)
+model = models.wide_resnet50_2(pretrained=True)
 
-image_dir = "data/CASIA_WebFace/images/bonafide/raw/"
+image_dir = "data/CASIA-WebFace/images/bonafide/raw/"
 image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith((".jpg", ".jpeg", ".png"))]
 
 def load_and_preprocess(img_path, scale):
@@ -19,7 +20,7 @@ def load_and_preprocess(img_path, scale):
     # Assuming RetinaFace is used for face detection
     faces = RetinaFace.detect_faces(img)
     if len(faces) > 0:
-    #     # Assuming you want to use the first detected face
+        # Assuming you want to use the first detected face
         face_info = faces['face_1']
 
         # Extract the bounding box information
@@ -37,12 +38,11 @@ def load_and_preprocess(img_path, scale):
 
         return normalized_img
 
-for img_path in image_paths:
+for img_path in image_paths[:]:
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
         normalized_img = load_and_preprocess(img_path, scale)
         features = model(normalized_img.unsqueeze(0)).squeeze(0)
-        feature_path = f"../../../feature_scale_{scale}/{image_name.replace('.jpg', '.pt')}"
+        feature_path = f"data/CASIA-WebFace/features_scale_{scale}/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
         torch.save(features, feature_path)
-
 
