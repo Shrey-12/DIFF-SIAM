@@ -78,7 +78,7 @@ class DatasetFolder(VisionDataset):
         self.loader = loader
         self.extensions = extensions
         self.features=features
-        self.samples = samples
+        self.samples = samples[:2]
         self.targets = [s[1] for s in samples]
 
     def __getitem__(self, index):
