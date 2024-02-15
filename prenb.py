@@ -37,12 +37,17 @@ def load_and_preprocess(img_path, scale):
         normalized_img = transforms.ToTensor()(cv2.resize(cropped_face, size))
 
         return normalized_img
+    else:
+        print(f"No faces detected in {img_path}")
+        return None
 
-for img_path in image_paths[:]:
+for img_path in image_paths:
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
         normalized_img = load_and_preprocess(img_path, scale)
-        features = model(normalized_img.unsqueeze(0)).squeeze(0)
-        feature_path = f"data/CASIA-WebFace/features_scale_{scale}/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
-        torch.save(features, feature_path)
+
+        if normalized_img is not None:
+            features = model(normalized_img.unsqueeze(0)).squeeze(0)
+            feature_path = f"../../../feature_scale_{scale}/{image_name.replace('.jpg', '.pt')}"
+            torch.save(features, feature_path)
 
