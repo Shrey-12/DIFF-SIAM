@@ -8,13 +8,16 @@ import os
 
 # Load the Wide ResNet 50 model, ensuring correct model name
 model = models.wide_resnet50_2(pretrained=True)
-count = 0
+ccount = 0
 
 image_dir = "data/CASIA-WebFace/images/bonafide/raw/"
 image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith((".jpg", ".jpeg", ".png"))]
 
+print("hello")
+
 def load_and_preprocess(img_path, scale):
     # Load image
+    global ccount
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -40,21 +43,22 @@ def load_and_preprocess(img_path, scale):
         return normalized_img
     else:
         print(f"No faces detected in {img_path}")
-        count-=1
+        ccount-=1
         return None
 
 for img_path in image_paths:
-    count+=1
+    ccount+=1
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
-        feature_path = f"../../../feature_scale_{scale}/{image_name.replace('.jpg', '.pt')}"
+        feature_path = f"data/CASIA-WebFace/features_scale_{scale}/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
         if os.path.exists(feature_path):
+            print("repeated: ",ccount)
             continue
-        normalized_img = load_and_preprocess(img_path, scale)
+        else:
+            normalized_img = load_and_preprocess(img_path, scale)
+            if normalized_img is not None:
+                features = model(normalized_img.unsqueeze(0)).squeeze(0)
+                # model, dir
+                torch.save(features, feature_path)
 
-        if normalized_img is not None:
-            features = model(normalized_img.unsqueeze(0)).squeeze(0)
-            
-            # model, dir
-            torch.save(features, feature_path)
-
+print("Number of pt generated: ",ccount)
