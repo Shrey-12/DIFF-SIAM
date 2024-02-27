@@ -75,6 +75,8 @@ def main():
     train_set = ImageFolder(args.train_set, transform=tf, load_images=images_flag, features=features_flag)
     train_dl = data.DataLoader(train_set, args.batch_size, shuffle=False, drop_last=True,
                                num_workers=args.num_workers, persistent_workers=True)
+    #shreyas modification
+    train_set.samples = train_set.samples[:2] 
     if args.test_every !=-1:
         assert args.test_set != ""
         test_set = ImageFolder(args.test_set, transform=tf, load_images=images_flag, features=features_flag)
