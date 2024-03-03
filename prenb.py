@@ -58,6 +58,7 @@ for img_path in image_paths:
                 features = model(normalized_img.unsqueeze(0))
                 print(features.shape)
                 features_squeezed = features.squeeze(0)
+                print(features_squeezed.shape)
                 # model, dir
                 torch.save(features, feature_path)
 
