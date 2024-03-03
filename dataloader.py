@@ -108,8 +108,8 @@ class DatasetFolder(VisionDataset):
             else:
                 print("here4")
                 sample=None
-        except:
-            print("Error: {} was not loaded ".format(path))
+        except Exception as err:
+            print("Error: {}".format(err))
         
         # print("Done: {} was loaded ".format(path))
         return sample, target, path
