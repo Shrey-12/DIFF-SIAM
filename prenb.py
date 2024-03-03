@@ -54,6 +54,7 @@ for img_path in image_paths:
             continue
         else:
             normalized_img = load_and_preprocess(img_path, scale)
+            print(normalized_img.shape)
             if normalized_img is not None:
                 features = model(normalized_img.unsqueeze(0))
                 print(features.shape)
