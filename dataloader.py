@@ -83,6 +83,7 @@ class DatasetFolder(VisionDataset):
 
     def __getitem__(self, index):
         path, target = self.samples[index]
+        sample = None
         try:
             if self.features and not self.load_images: # load only feature maps
                 # load feature tensors
