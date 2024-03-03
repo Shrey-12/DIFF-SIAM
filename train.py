@@ -189,7 +189,7 @@ def main():
             for batch in tqdm(train_dl, disable=not accelerator.is_main_process):
                 opt.zero_grad()
                 reals = batch[0].to(device)
-                print(reals.size(0))
+                print("Szieeeeeeee",reals.size())
                 if features_flag:
                     reals = torch.reshape(reals, (reals.size(0), config[branch]['input_channels'], config[branch]['input_size'][0], config[branch]['input_size'][0]))
                 noise = torch.randn_like(reals)
