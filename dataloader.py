@@ -107,7 +107,8 @@ class DatasetFolder(VisionDataset):
                 sample=None
         except:
             print("Error: {} was not loaded ".format(path))
-
+        
+        print("Done: {} was loaded ".format(path))
         return sample, target, path
 
     def __len__(self):
