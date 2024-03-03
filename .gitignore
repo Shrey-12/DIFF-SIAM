@@ -8,3 +8,4 @@ data/CASIA-WebFace/features_scale_2/bonafide/raw/
 /data/FRGC/*.jpg
 /data/FRGC/*.jpeg
 /data/FRGC/*.png
+/output/experiment/checkpoints/*
