@@ -87,7 +87,7 @@ class DatasetFolder(VisionDataset):
         try:
             if self.features and not self.load_images:
                 tensor1 = load(path).unsqueeze(0)
-                tensor2 = load(path.replace("/features_scale_1/", "/features_scale_2/"))                
+                tensor2 = load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0)                
                 # load only feature maps
                 # load feature tensors
                 sample = cat((tensor1, tensor2), dim=0)
