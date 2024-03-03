@@ -146,6 +146,7 @@ def main():
             image_names=[]
             for batch_id, batch in enumerate(tqdm(test_dl, disable=not accelerator.is_main_process)):
                 reals = batch[0].to(device)
+                print("Actual Size of reals:",reals.size())
                 if features_flag:
                     reals = torch.reshape(reals, (reals.size(0), config[branch]['input_channels'], config[branch]['input_size'][0], config[branch]['input_size'][0]))
                 gt_labels[batch_id * args.batch_size: batch_id * args.batch_size + batch[1].size(0)] = batch[1]
