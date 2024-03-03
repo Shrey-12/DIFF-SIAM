@@ -86,27 +86,25 @@ class DatasetFolder(VisionDataset):
         sample = None
         try:
             if self.features and not self.load_images:
-                tensor1 = load(path).unsqueeze(0)
-                tensor2 = load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0)                
                 # load only feature maps
                 # load feature tensors
-                sample = cat((tensor1, tensor2), dim=0)
-                print("path:",sample)
+                sample = cat((load(path).unsqueeze(0), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0)), dim=0)
+                # print("path:",sample)
 
             elif self.load_images and not self.features: # load only images
-                print("here2")
+                # print("here2")
                 sample = self.loader(path)
                 if self.transform is not None:
                     sample = self.transform(sample)
             elif self.load_images and self.features: # load both, images and features
-                print("here3")
+                # print("here3")
                 img = self.loader(path)
                 if self.transform is not None:
                     img = self.transform(img)
                 features = cat((load(path.replace("/images/", "/features_scale_1/")+".pt").unsqueeze(0), load(path.replace("/images/", "/features_scale_2/")+".pt")), dim=0)
                 sample=(img, features)
             else:
-                print("here4")
+                # print("here4")
                 sample=None
         except Exception as err:
             print("Error: {}".format(err))
