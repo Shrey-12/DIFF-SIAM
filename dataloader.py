@@ -86,7 +86,7 @@ class DatasetFolder(VisionDataset):
         sample = None
         try:
             if self.features and not self.load_images:
-                print("here1")
+                print("path:",path)
                 # load only feature maps
                 # load feature tensors
                 sample = cat((load(path).unsqueeze(0), load(path.replace("/features_scale_1/", "/features_scale_2/"))), dim=0)
@@ -108,7 +108,7 @@ class DatasetFolder(VisionDataset):
         except:
             print("Error: {} was not loaded ".format(path))
         
-        print("Done: {} was loaded ".format(path))
+        # print("Done: {} was loaded ".format(path))
         return sample, target, path
 
     def __len__(self):
