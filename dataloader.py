@@ -88,7 +88,7 @@ class DatasetFolder(VisionDataset):
             if self.features and not self.load_images:
                 # load only feature maps
                 # load feature tensors
-                sample = cat((load(path).unsqueeze(0), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0)), dim=0)
+                sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach()), dim=0)
                 # print("path:",sample)
 
             elif self.load_images and not self.features: # load only images
