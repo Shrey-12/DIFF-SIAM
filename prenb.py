@@ -1,13 +1,29 @@
 
 import torch
+import torch.nn as nn
 import torchvision.models as models
 import torchvision.transforms as transforms
 from retinaface import RetinaFace
 import cv2
 import os
 
+class CustomWideResNet(nn.Module):
+    def __init__(self):
+        super(CustomWideResNet, self).__init__()
+        self.wide_resnet = models.wide_resnet50_2(pretrained=True)
+        # Remove the final fully connected layer
+        self.wide_resnet = nn.Sequential(*list(self.wide_resnet.children())[:-1])
+        # Add a custom fully connected layer with 1024 channels and appropriate spatial dimensions
+        self.custom_fc = nn.Linear(2048, 1024 * 14 * 14)
+
+    def forward(self, x):
+        x = self.wide_resnet(x)
+        x = self.custom_fc(x.view(x.size(0), -1))
+        x = x.view(x.size(0), 1024, 14, 14)
+        return x
+
 # Load the Wide ResNet 50 model, ensuring correct model name
-model = models.wide_resnet50_2(pretrained=True)
+model = CustomWideResNet()
 ccount = 0
 
 image_dir = "data/CASIA-WebFace/images/bonafide/raw/"
