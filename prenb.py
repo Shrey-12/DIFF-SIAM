@@ -70,7 +70,7 @@ def load_and_preprocess(img_path, scale):
                 patch_features = model(patch.unsqueeze(0))
                 features.append(patch_features.squeeze(0))
             combined_features = torch.stack(features, dim=0)
-            print("combined features shape ",combined_features)
+            print("combined features shape ",combined_features.shape)
             return combined_features
     else:
         print(f"No faces detected in {img_path}")
