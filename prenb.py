@@ -61,9 +61,8 @@ def load_and_preprocess(img_path, scale):
             return features_squeezed
 
         if scale==2:
-            kernel_size, stride = 224, 224
-            patches = normalized_img.unfold(1, kernel_size, stride).unfold(2, kernel_size, stride)
-            patches = patches.contiguous().view(patches.size(0), -1, kernel_size, kernel_size)
+            patches = normalized_img.unfold(1, 112, 224).unfold(2, 112, 224)
+            patches = patches.view(-1, 3, 224, 224)
             print(patches.shape)
             features = []
             for patch in patches:
