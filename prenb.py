@@ -64,6 +64,7 @@ def load_and_preprocess(img_path, scale):
             kernel_size, stride = 224, 224
             patches = normalized_img.unfold(1, kernel_size, stride).unfold(2, kernel_size, stride)
             patches = patches.contiguous().view(patches.size(0), -1, kernel_size, kernel_size)
+            print(patches.shape)
             features = []
             for patch in patches:
                 patch_features = model(patch.unsqueeze(0))
