@@ -86,7 +86,7 @@ class DatasetFolder(VisionDataset):
         try:
             if self.features and not self.load_images: # load only feature maps
                 # load feature tensors
-                sample = cat((load(path).unsqueeze(0), load(path.replace("/features_scale_1/", "/features_scale_2/"))), dim=0)
+                sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach()), dim=0)
             elif self.load_images and not self.features: # load only images
                 sample = self.loader(path)
                 if self.transform is not None:
@@ -95,7 +95,7 @@ class DatasetFolder(VisionDataset):
                 img = self.loader(path)
                 if self.transform is not None:
                     img = self.transform(img)
-                features = cat((load(path.replace("/images/", "/features_scale_1/")+".pt").unsqueeze(0), load(path.replace("/images/", "/features_scale_2/")+".pt")), dim=0)
+                features = cat((load(path.replace("/images/", "/features_scale_1/")+".pt").unsqueeze(0).detach(), load(path.replace("/images/", "/features_scale_2/")+".pt").detach()), dim=0)
                 sample=(img, features)
             else:
                 sample=None
