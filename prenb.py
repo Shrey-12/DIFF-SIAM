@@ -53,14 +53,31 @@ def load_and_preprocess(img_path, scale):
         # Resize the image to the desired scale
         size = (224, 224) if scale == 1 else (448, 448)
         normalized_img = transforms.ToTensor()(cv2.resize(cropped_face, size))
+        if scale==1:
+            features = model(normalized_img.unsqueeze(0))
 
-        return normalized_img
+            features_squeezed = features.squeeze(0)
+            return features_squeezed
+
+        if scale==2:
+            patch_size = (normalized_img.shape[1]//2,normalized_img[2]//2)
+            #split along width
+            patches = torch.split(normalized_img,patch_size,dim=1)
+            #split along height
+            patches = torch.split(torch.cat(patches,dim=2),patch_size,dim=2)
+            features = []
+            for patch in patches:
+                patch_features = model(patch.unsqueeze(0))
+                features.append(patch_features.squeeze(0))
+            combined_features = torch.cat(features,dim=0)
+            print("combined features shape ",combined_features.shape)
+            return combined_features
     else:
         print(f"No faces detected in {img_path}")
         ccount-=1
         return None
 
-for img_path in image_paths:
+for img_path in image_paths[:2]:
     ccount+=1
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
@@ -69,14 +86,11 @@ for img_path in image_paths:
             print("repeated: ",ccount)
             continue
         else:
-            normalized_img = load_and_preprocess(img_path, scale)
-            print(normalized_img.shape)
-            if normalized_img is not None:
-                features = model(normalized_img.unsqueeze(0))
-                print(features.shape)
-                features_squeezed = features.squeeze(0)
-                print(features_squeezed.shape)
+            sqfeat= load_and_preprocess(img_path, scale)
+            # print(normalized_img.shape)
+            if sqfeat is not None:
+                # print(features_squeezed.shape)
                 # model, dir
-                torch.save(features, feature_path)
+                torch.save(sqfeat, feature_path)
 
 print("Number of pt generated: ",ccount)
