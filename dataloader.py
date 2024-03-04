@@ -3,7 +3,7 @@ from PIL import Image
 import os
 import os.path
 from glob import glob
-from torch import load, cat
+from torch import load, cat, stack
 
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.pt')
 
@@ -88,8 +88,11 @@ class DatasetFolder(VisionDataset):
             if self.features and not self.load_images:
                 # load only feature maps
                 # load feature tensors
-                sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach()), dim=0)
+                # sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach()), dim=0)
                 # print("path:",sample)
+                sample = [load(path).unsqueeze(0), load(path.replace("/features_scale_1/", "/features_scale_2/"))]
+                sample = stack(sample, dim=0)
+
 
             elif self.load_images and not self.features: # load only images
                 # print("here2")
