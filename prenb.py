@@ -61,13 +61,9 @@ def load_and_preprocess(img_path, scale):
             return features_squeezed
 
         if scale==2:
-            # patch_size = [normalized_img.shape[1]//2,normalized_img[2]//2]
-            #split along width
-            print("zero split:", normalized_img.shape)
-            patches = torch.split(normalized_img,[224,224],dim=1)
-            print("one split:", patches[0].shape)
-            #split along height
-            patches = torch.split(torch.cat(patches,dim=2),[224,224],dim=2)
+            kernel_size, stride = 224, 224
+            patches = normalized_img.unfold(1, kernel_size, stride).unfold(2, kernel_size, stride)
+            patches = patches.contiguous().view(patches.size(0), -1, kernel_size, kernel_size)
             features = []
             for patch in patches:
                 patch_features = model(patch.unsqueeze(0))
