@@ -77,7 +77,7 @@ def load_and_preprocess(img_path, scale):
         ccount-=1
         return None
 
-for img_path in image_paths[:10]:
+for img_path in image_paths[20:30]:
     ccount+=1
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
