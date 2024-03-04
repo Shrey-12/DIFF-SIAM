@@ -78,7 +78,7 @@ def load_and_preprocess(img_path, scale):
         ccount-=1
         return None
 
-for img_path in image_paths[30:40]:
+for img_path in image_paths[0:10]:
     ccount+=1
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
@@ -93,6 +93,6 @@ for img_path in image_paths[30:40]:
                 pass
                 # print(features_squeezed.shape)
                 # model, dir
-                # torch.save(sqfeat, feature_path)
+                torch.save(sqfeat, feature_path)
 
 print("Number of pt generated: ",ccount)
