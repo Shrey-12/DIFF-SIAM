@@ -91,8 +91,8 @@ class DatasetFolder(VisionDataset):
                 print(load(path).unsqueeze(0).detach().shape)
                 print(load(path.replace("/features_scale_1/", "/features_scale_2/")).detach().shape)
                       
-                # sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach()), dim=0)
-                # print("path:",sample)
+                sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).detach()), dim=0)
+                print("path:",sample.shape)
 
             elif self.load_images and not self.features: # load only images
                 # print("here2")
