@@ -53,6 +53,7 @@ def load_and_preprocess(img_path, scale):
         # Resize the image to the desired scale
         size = (224, 224) if scale == 1 else (448, 448)
         normalized_img = transforms.ToTensor()(cv2.resize(cropped_face, size))
+        print(normalized_img.shape)
         if scale==1:
             features = model(normalized_img.unsqueeze(0))
 
@@ -60,11 +61,11 @@ def load_and_preprocess(img_path, scale):
             return features_squeezed
 
         if scale==2:
-            patch_size = (normalized_img.shape[1]//2,normalized_img[2]//2)
+            # patch_size = [normalized_img.shape[1]//2,normalized_img[2]//2]
             #split along width
-            patches = torch.split(normalized_img,patch_size,dim=1)
+            patches = torch.split(normalized_img,224,dim=1)
             #split along height
-            patches = torch.split(torch.cat(patches,dim=2),patch_size,dim=2)
+            patches = torch.split(torch.cat(patches,dim=2),224,dim=2)
             features = []
             for patch in patches:
                 patch_features = model(patch.unsqueeze(0))
