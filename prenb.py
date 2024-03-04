@@ -58,6 +58,7 @@ def load_and_preprocess(img_path, scale):
             features = model(normalized_img.unsqueeze(0))
 
             features_squeezed = features.squeeze(0)
+            print("scale 1 features shape: ",features_squeezed.shape)
             return features_squeezed
 
         if scale==2:
