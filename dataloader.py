@@ -89,7 +89,7 @@ class DatasetFolder(VisionDataset):
                 # load only feature maps
                 # load feature tensors
                 print(load(path).unsqueeze(0).detach().shape)
-                print((load(path).replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach().shape)
+                print(load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach().shape)
                       
                 # sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).unsqueeze(0).detach()), dim=0)
                 # print("path:",sample)
