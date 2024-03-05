@@ -1,11 +1,6 @@
 /__pycache__/
 /k_diffusion/__pycache__/
-
-data/CASIA-WebFace/features_scale_2/bonafide/raw/
-/data/CASIA-WebFace/features_scale_1/bonafide/raw/*
-/data/CASIA-WebFace/features_scale_2/bonafide/raw/*
-/data/CASIA-WebFace/images/bonafide/raw/
-/data/FRGC/*.jpg
-/data/FRGC/*.jpeg
-/data/FRGC/*.png
+/data/CASIA-WebFace/*/bonafide/raw/*
+/data/FRLL/*/*/*/*
 /output/experiment/checkpoints/*
+/new/data/CASIA-WebFace/*/bonafide/raw/*
