@@ -26,7 +26,7 @@ class CustomWideResNet(nn.Module):
 model = CustomWideResNet()
 ccount = 0
 
-image_dir = "data/CASIA-WebFace/images/bonafide/raw/"
+image_dir = "data/FRLL/images/morphs/"
 image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith((".jpg", ".jpeg", ".png"))]
 
 def load_and_preprocess(img_path, scale):
