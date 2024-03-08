@@ -59,7 +59,7 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
                 samples.append(item)
         else:
             continue
-    return samples
+    return samples[:20000]
 
 class DatasetFolder(VisionDataset):
 
