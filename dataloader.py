@@ -55,6 +55,7 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
                 samples.append(item)
         elif load_images and features:
             if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/")+".pt") and is_valid_file(path.replace("/images/", "/features_scale_2/")+".pt"):
+                print('!!!Heres the path I am trying to load :',path)
                 item = (path, target)
                 samples.append(item)
         else:
