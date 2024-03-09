@@ -35,6 +35,7 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
             return has_file_allowed_extension(x, extensions) and os.path.isfile(x)
     if load_images:
         files = glob(os.path.join(dir, "images", "*", "*", "*"))
+        print(files[0])
     elif features and not load_images:
         files = glob(os.path.join(dir, "features_scale_1", "*", "*", "*"))
     else:
@@ -56,6 +57,9 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
                 item = (path, target)
                 samples.append(item)
         elif load_images and features:
+            print("Is path valid:",is_valid_file(path), path)
+            print("Is path valid:",is_valid_file(path.replace("/images/", "/features_scale_1/")+".pt"), path)
+            print("Is path valid:",is_valid_file(path.replace("/images/", "/features_scale_2/")+".pt"), path)
             if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/")+".pt") and is_valid_file(path.replace("/images/", "/features_scale_2/")+".pt"):
                 print('4. !!!Heres the path I am trying to load :',path)
                 item = (path, target)
