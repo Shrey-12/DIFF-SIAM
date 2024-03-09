@@ -106,7 +106,7 @@ def main():
                 sigma = torch.FloatTensor([value]).to(device)
 
                 x_images = model_image.add_noise(reals_images, noise_images, sigma)
-                sigmas_images = K.utils.get_sigmas_karras(20, sigma_min_image, sigma.cpu(), rho=7., device=device)
+                sigmas_images = K.utils.get_sigmas_karras(30, sigma_min_image, sigma.cpu(), rho=7., device=device)
                 x_0_images = K.utils.sample_lms_test(model_image, x_images, sigmas_images, disable=not accelerator.is_main_process)
                 x_0_images = accelerator.gather(x_0_images)[:args.batch_size]
                 rec_images = (reals_images - x_0_images).view(x_0_images.size(0), x_0_images.size(1) * x_0_images.size(2) * x_0_images.size(3))

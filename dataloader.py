@@ -28,17 +28,21 @@ def is_image_file(filename):
 
 def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, features=None):
     samples = []
+    folder_counts={}
     if not ((extensions is None) ^ (is_valid_file is None)):
         raise ValueError("Both extensions and is_valid_file cannot be None or not None at the same time")
     if extensions is not None:
         def is_valid_file(x):
             return has_file_allowed_extension(x, extensions) and os.path.isfile(x)
     if load_images:
+        print("!!!!1")
         files = glob(os.path.join(dir, "images", "*", "*", "*"))
-        print(files[0])
+        # print(files[0])
     elif features and not load_images:
+        print("!!!!2")
         files = glob(os.path.join(dir, "features_scale_1", "*", "*", "*"))
     else:
+        print("!!!!3")
         files=None
 
     for path in sorted(files):
@@ -48,7 +52,6 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
         # check if files exist/are valid
         if load_images and not features:
             if is_valid_file(path):
-                folder_counts={}
                 folder_name = os.path.dirname(path).split("/")[-1]
                 # print('2.!!!Heres the path I am trying to load :',path)
                 if folder_name not in folder_counts:
@@ -60,7 +63,6 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
                     folder_counts[folder_name] += 1
         elif features and not load_images:
             if is_valid_file(path) and is_valid_file(path.replace("/features_scale_1/", "/features_scale_2/")):
-                folder_counts={}
                 # print('3.!!!Heres the path I am trying to load :',path)
                 folder_name = os.path.dirname(path).split("/")[-1]
                 # print("!!! folder name",folder_name)
@@ -76,7 +78,6 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
             # print("Is path valid2 :",path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt"))
             # print("Is path valid 3:",path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt"))
             if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")) and is_valid_file(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")):
-                folder_counts={}
                 # print('4. !!!Heres the path I am trying to load :',path)
                 folder_name = os.path.dirname(path).split("/")[-1]
                 # print("!!! folder name",folder_name)
@@ -87,6 +88,7 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
                     item = (path, target)
                     samples.append(item)
                     folder_counts[folder_name] += 1
+                
             else:
                 continue
     return samples
