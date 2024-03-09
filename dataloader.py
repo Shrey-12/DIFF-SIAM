@@ -107,7 +107,8 @@ class DatasetFolder(VisionDataset):
                 img = self.loader(path)
                 if self.transform is not None:
                     img = self.transform(img)
-                features = cat(load(path.replace(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")).unsqueeze(0).detach()), load(path.replace(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")).detach()), dim=0)
+                # features = cat(load(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt"))).unsqueeze(0).detach(), load(path.replace(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")).detach()), dim=0)
+                    features = cat((load(path.replace("/images/", "/features_scale_1/").replace(".jpg", ".pt")).unsqueeze(0).detach(), load(path.replace("/images/", "/features_scale_2/").replace(".jpg", ".pt")).detach()), dim=0)
                 sample=(img, features)
             else:
                 # print("here4")
