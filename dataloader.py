@@ -61,7 +61,7 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
             # print("Is path valid2 :",path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt"))
             # print("Is path valid 3:",path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt"))
             if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")) and is_valid_file(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")):
-                # print('4. !!!Heres the path I am trying to load :',path)
+                print('4. !!!Heres the path I am trying to load :',path)
                 item = (path, target)
                 samples.append(item)
         else:
