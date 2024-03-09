@@ -48,29 +48,48 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
         # check if files exist/are valid
         if load_images and not features:
             if is_valid_file(path):
+                folder_counts={}
+                folder_name = os.path.dirname(path).split("/")[-1]
                 # print('2.!!!Heres the path I am trying to load :',path)
-                item = (path, target)
-                samples.append(item)
+                if folder_name not in folder_counts:
+                    folder_counts[folder_name] = 0
+
+                if folder_counts[folder_name] < 40:
+                    item = (path, target)
+                    samples.append(item)
+                    folder_counts[folder_name] += 1
         elif features and not load_images:
             if is_valid_file(path) and is_valid_file(path.replace("/features_scale_1/", "/features_scale_2/")):
+                folder_counts={}
                 # print('3.!!!Heres the path I am trying to load :',path)
-                item = (path, target)
-                samples.append(item)
+                folder_name = os.path.dirname(path).split("/")[-1]
+                # print("!!! folder name",folder_name)
+                if folder_name not in folder_counts:
+                    folder_counts[folder_name] = 0
+
+                if folder_counts[folder_name] < 40:
+                    item = (path, target)
+                    samples.append(item)
+                    folder_counts[folder_name] += 1
         elif load_images and features:
             # print("Is path valid 1:",is_valid_file(path), path)
             # print("Is path valid2 :",path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt"))
             # print("Is path valid 3:",path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt"))
             if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")) and is_valid_file(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")):
+                folder_counts={}
                 # print('4. !!!Heres the path I am trying to load :',path)
                 folder_name = os.path.dirname(path).split("/")[-1]
-                print("!!! folder name",folder_name)
-                if len([s for s in samples if folder_name in s[0]]) < 40:
+                # print("!!! folder name",folder_name)
+                if folder_name not in folder_counts:
+                    folder_counts[folder_name] = 0
+
+                if folder_counts[folder_name] < 40:
                     item = (path, target)
                     samples.append(item)
-        else:
-            continue
-    return samples[:20000]
-
+                    folder_counts[folder_name] += 1
+            else:
+                continue
+    return samples
 class DatasetFolder(VisionDataset):
 
     def __init__(self, root, loader, extensions=None, transform=None,
