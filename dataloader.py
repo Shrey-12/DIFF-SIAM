@@ -90,22 +90,23 @@ class DatasetFolder(VisionDataset):
         sample = None
         try:
             if self.features and not self.load_images:
+                print("here1")
                 sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).detach()), dim=0)
 
             elif self.load_images and not self.features: # load only images
-                # print("here2")
+                print("here2")
                 sample = self.loader(path)
                 if self.transform is not None:
                     sample = self.transform(sample)
             elif self.load_images and self.features: # load both, images and features
-                # print("here3")
+                print("here3")
                 img = self.loader(path)
                 if self.transform is not None:
                     img = self.transform(img)
                 features = cat((load(path.replace("/images/", "/features_scale_1/")+".pt").unsqueeze(0).detach(), load(path.replace("/images/", "/features_scale_2/")+".pt").detach()), dim=0)
                 sample=(img, features)
             else:
-                # print("here4")
+                print("here4")
                 sample=None
         except Exception as err:
             print("Error: {}".format(err))
