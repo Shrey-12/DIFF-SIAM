@@ -26,7 +26,7 @@ class CustomWideResNet(nn.Module):
 model = CustomWideResNet()
 ccount = 0
 
-image_dir = "data/CASIA-WebFace/images/bonafide/raw/"
+image_dir = "data/FRLL/images/bonafide/raw/"
 image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith((".jpg", ".jpeg", ".png"))]
 
 def load_and_preprocess(img_path, scale):
@@ -76,11 +76,11 @@ def load_and_preprocess(img_path, scale):
         ccount-=1
         return None
 
-for img_path in image_paths[10000:20000]:
+for img_path in image_paths:
     ccount+=1
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
-        feature_path = f"data/CASIA-WebFace/features_scale_{scale}/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
+        feature_path = f"data/FRLL/features_scale_{scale}/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
         if os.path.exists(feature_path):
             print("repeated: ",ccount)
             continue
