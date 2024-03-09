@@ -72,6 +72,7 @@ class DatasetFolder(VisionDataset):
         self.load_images = load_images
         samples = make_dataset(self.root, extensions, is_valid_file, load_images=load_images, features=self.features)
         if len(samples) == 0:
+            print("Folder: ",self.root)
             raise (RuntimeError("Found 0 files in subfolders of: " + self.root + "\n"
                                 "Supported extensions are: " + ",".join(extensions)))
 
