@@ -48,20 +48,20 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
         # check if files exist/are valid
         if load_images and not features:
             if is_valid_file(path):
-                print('2.!!!Heres the path I am trying to load :',path)
+                # print('2.!!!Heres the path I am trying to load :',path)
                 item = (path, target)
                 samples.append(item)
         elif features and not load_images:
             if is_valid_file(path) and is_valid_file(path.replace("/features_scale_1/", "/features_scale_2/")):
-                print('3.!!!Heres the path I am trying to load :',path)
+                # print('3.!!!Heres the path I am trying to load :',path)
                 item = (path, target)
                 samples.append(item)
         elif load_images and features:
-            print("Is path valid:",is_valid_file(path), path)
-            print("Is path valid:",path.replace("/images/", "/features_scale_1/")+".pt")
-            print("Is path valid:",path.replace("/images/", "/features_scale_2/")+".pt")
-            if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/")+".pt") and is_valid_file(path.replace("/images/", "/features_scale_2/")+".pt"):
-                print('4. !!!Heres the path I am trying to load :',path)
+            # print("Is path valid:",is_valid_file(path), path)
+            # print("Is path valid:",path.replace("/images/", "/features_scale_1/")+".pt")
+            # print("Is path valid:",path.replace("/images/", "/features_scale_2/")+".pt")
+            if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")) and is_valid_file(path.replace("/images/", "/features_scale_2/")+".pt"):
+                # print('4. !!!Heres the path I am trying to load :',path)
                 item = (path, target)
                 samples.append(item)
         else:
