@@ -61,7 +61,7 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
             # print("Is path valid2 :",path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt"))
             # print("Is path valid 3:",path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt"))
             if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")) and is_valid_file(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")):
-                print('4. !!!Heres the path I am trying to load :',path)
+                # print('4. !!!Heres the path I am trying to load :',path)
                 item = (path, target)
                 samples.append(item)
         else:
@@ -94,23 +94,23 @@ class DatasetFolder(VisionDataset):
         sample = None
         try:
             if self.features and not self.load_images:
-                print("here1")
+                # print("here1")
                 sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).detach()), dim=0)
 
             elif self.load_images and not self.features: # load only images
-                print("here2")
+                # print("here2")
                 sample = self.loader(path)
                 if self.transform is not None:
                     sample = self.transform(sample)
             elif self.load_images and self.features: # load both, images and features
-                print("here3")
+                # print("here3")
                 img = self.loader(path)
                 if self.transform is not None:
                     img = self.transform(img)
-                features = cat((load(path.replace("/images/", "/features_scale_1/")+".pt").unsqueeze(0).detach(), load(path.replace("/images/", "/features_scale_2/")+".pt").detach()), dim=0)
+                features = cat(load(path.replace(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")).unsqueeze(0).detach()), load(path.replace(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")).detach()), dim=0)
                 sample=(img, features)
             else:
-                print("here4")
+                # print("here4")
                 sample=None
         except Exception as err:
             print("Error: {}".format(err))
