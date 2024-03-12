@@ -7,6 +7,8 @@ from retinaface import RetinaFace
 import cv2
 import os
 
+print(torch.cuda.is_available())
+
 class CustomWideResNet(nn.Module):
     def __init__(self):
         super(CustomWideResNet, self).__init__()
@@ -22,11 +24,12 @@ class CustomWideResNet(nn.Module):
         x = x.view(x.size(0), 1024, 14, 14)
         return x
 
+device = torch.device('cuda')
 # Load the Wide ResNet 50 model, ensuring correct model name
-model = CustomWideResNet()
+model = CustomWideResNet().to(device)
 ccount = 0
 
-image_dir = "data/FRLL/images/bonafide/raw/"
+image_dir = "data/CASIA-WebFace/images/bonafide/raw/"
 image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith((".jpg", ".jpeg", ".png"))]
 
 def load_and_preprocess(img_path, scale):
@@ -34,15 +37,13 @@ def load_and_preprocess(img_path, scale):
     global ccount
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
     # Assuming RetinaFace is used for face detection
     faces = RetinaFace.detect_faces(img)
+    #faces = RetinaFace.detect_faces(img)
     if len(faces) > 0:
         # Assuming you want to use the first detected face
         face_info = faces['face_1']
-
         # Extract the bounding box information
-        score = face_info['score']
         facial_area = face_info['facial_area']
         left, top, right, bottom = facial_area
 
@@ -52,8 +53,7 @@ def load_and_preprocess(img_path, scale):
 
         # Resize the image to the desired scale
         size = (224, 224) if scale == 1 else (448, 448)
-        normalized_img = transforms.ToTensor()(cv2.resize(cropped_face, size))
-        print(normalized_img.shape)
+        normalized_img = transforms.ToTensor()(cv2.resize(cropped_face, size)).to(device)
         if scale==1:
             features = model(normalized_img.unsqueeze(0))
 
@@ -64,7 +64,6 @@ def load_and_preprocess(img_path, scale):
             kernel_size, stride = 224, 224
             patches = normalized_img.unfold(2, kernel_size, stride).unfold(1, kernel_size, stride)
             patches = patches.contiguous().view(-1, 3, kernel_size, kernel_size)
-            print(patches.shape)
             features = []
             for patch in patches:
                 patch_features = model(patch.unsqueeze(0))
@@ -76,11 +75,11 @@ def load_and_preprocess(img_path, scale):
         ccount-=1
         return None
 
-for img_path in image_paths:
+for img_path in image_paths[20000:30000]:
     ccount+=1
     image_name = os.path.basename(img_path)
     for scale in [1, 2]:
-        feature_path = f"data/FRLL/features_scale_{scale}/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
+        feature_path = f"data/CASIA-WebFace/features_scale_{scale}/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
         if os.path.exists(feature_path):
             print("repeated: ",ccount)
             continue
@@ -88,9 +87,7 @@ for img_path in image_paths:
             sqfeat= load_and_preprocess(img_path, scale)
             # print(normalized_img.shape)
             if sqfeat is not None:
-                pass
-                # print(features_squeezed.shape)
-                # model, dir
                 torch.save(sqfeat, feature_path)
+                print("completed img:",ccount)
 
 print("Number of pt generated: ",ccount)
