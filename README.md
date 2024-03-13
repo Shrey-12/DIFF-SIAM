@@ -92,6 +92,10 @@ To train with evaluation on a testing set after each training epoch run:
 ```
 python train.py --train-set ./data/CASIA-WebFace/ --config configs/casia_webface.json --branch 1 --test-every 1 --test-set ./data/FRGC/
 ```
+run process in background
+```
+CUDA_VISIBLE_DEVICES=2 nohup python train.py --train-set ./data/CASIA-WebFace/ --config configs/casia_webface.json --branch 1 > results/train1.log 2>&1 &
+```
 To train the **branch for features**, set the value of the argument branch to 2:
 ```
 python train.py --train-set ./data/CASIA-WebFace/ --config configs/casia_webface.json --branch 2
