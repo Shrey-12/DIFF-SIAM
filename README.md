@@ -1,24 +1,48 @@
 # MAD-DDPM
-Official implementation of the paper "Face Morphing Attack Detection with Denoising Diffusion Probabilistic Models" [^1]. 
-
 MAD-DDPM is a one-class learning model that uses a reconstruction-based measure to determine whether the input images are bona fide or face morphs. At the core of the technique is a two-branch reconstruction procedure that uses denoising diffusion probabilistic models (DDPMs) learned over only bona-fide samples as the basis for the
 detection tasks. The first branch models the distribution on bona-fide samples directly in the pixel-space (for low-level artifact detection), while the second captures the distribution of higher-level features extracted with a pretrained CNN.
       
 
 ![MAD-DDPM](MAD_DDPM.png)
 
-For more information please refer to the paper available [here](https://lmi.fe.uni-lj.si/wp-content/uploads/2023/06/IWBF2023___Face_Morphing_Attack_Detection_with_Denoising_Diffusion_Probabilistic_Models.pdf).
+## 0. Setting up Tensorflow GPU
+```
+wget <mini-conda-link>
+conda install -y pip
+conda create -n <myenv> python=3.8 pip
+conda activate <myenv>
+conda install cudnn cudatoolkit -c conda-forge
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CONDA_PREFIX/Lib1
+```
+
 
 ## 1. Install the dependencies
 The model is implemented using PyTorch. The full list of used libraries can be found in requirements.txt.
 ```
+pip install torch=1.9.0+cu111 torchvision=0.10.0+cu111 -f https://download.pytorch.org/wh1/cu111/torch_stable.html
 pip install -r requirements.txt
 ```
 
 ## 2. Prepare the data
 The datasets you are using for training or testing should be placed in the directory called data. Datasets should have the following directory structure:
 ```
-Dataset_name
+CASIA-WebFace
+├── images
+│   ├── bonafide
+│   │   ├── raw
+│   │   │   └── bonafide_img_1.png
+│   │   │   └── bonafide_img_2.png
+│   │   │   └── ...
+├── features_scale_1
+│   ├── bonafide
+│   │   ├── raw
+│   │   │   └── bonafide_img_1.pt
+│   │   │   └── bonafide_img_2.pt
+│   │   │   └── ...
+├── features_scale_2
+│   ...
+
+FRLL
 ├── images
 │   ├── bonafide
 │   │   ├── raw
@@ -48,8 +72,14 @@ Dataset_name
 ├── features_scale_2
 │   ...
 ```
+![image](https://github.com/Shrey-12/MAD-DDPM/assets/98189346/a20ca74e-ce22-4fdc-8927-71a06f59396d) <br>
+RetinaFace.ipynb contains a demonstration of its working.
+Retina Face(https://github.com/serengil/retinaface)
 
-Images are expected to have one of the following image extensions: '.jpg', '.jpeg' or '.png'. Their corresponding pre-extracted feature maps should be saved with the same name in '.pt' format (PyTorch tensors). features_scale_1 is the root directory of features extracted from cropped face images of size 224x224 pixels (tensor size is 1024x14x14), while features_scale_2 contains features of images of size 448x448 pixels (tensor size is 4x1024x14x14).
+Images are expected to have one of the following image extensions: '.jpg'. Their corresponding pre-extracted feature maps should be saved with the same name in '.pt' format (PyTorch tensors). features_scale_1 is the root directory of features extracted from cropped face images of size 224x224 pixels (tensor size is 1024x14x14), while features_scale_2 contains features of images of size 448x448 pixels (tensor size is 4x1024x14x14). 
+### Model expects (1x980x32x32) = (1x1024x14x14) from 224x224 + (1x4x1024x14x14) from 448x448
+
+![image](https://github.com/Shrey-12/MAD-DDPM/assets/98189346/2989a362-c64b-4700-a397-9af913af5d79)
 
 MAD-DDPM is trained and tested on preprocessed datasets, where faces were first detected with RetinaFace, then cropped out with a margin of 5% of the detected bounding box height. Corresponding feature maps are extracted with a pretrained WideResNet. For more details please refer to the paper.
 
