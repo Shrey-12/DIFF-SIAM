@@ -100,6 +100,10 @@ To train the **branch for features**, set the value of the argument branch to 2:
 ```
 python train.py --train-set ./data/CASIA-WebFace/ --config configs/casia_webface.json --branch 2
 ```
+
+```
+CUDA_VISIBLE_DEVICES=6 nohup python train.py --train-set ./data/CASIA-WebFace/ --config configs/casia_webface.json --branch 2 --experiment_name lannisters --batch-size 30 --num_epochs 31 --save-every 5 > results/train2.log 2>&1 &
+```
 Checkpoints are by default exported to the directory named output. 
 
 ## 4. Evaluation
