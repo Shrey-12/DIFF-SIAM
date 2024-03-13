@@ -35,14 +35,11 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
         def is_valid_file(x):
             return has_file_allowed_extension(x, extensions) and os.path.isfile(x)
     if load_images:
-        print("!!!!1")
         files = glob(os.path.join(dir, "images", "*", "*", "*"))
         # print(files[0])
     elif features and not load_images:
-        print("!!!!2")
         files = glob(os.path.join(dir, "features_scale_1", "*", "*", "*"))
     else:
-        print("!!!!3")
         files=None
 
     for path in sorted(files):
@@ -88,7 +85,6 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
                     item = (path, target)
                     samples.append(item)
                     folder_counts[folder_name] += 1
-                
             else:
                 continue
     return samples
