@@ -3,9 +3,10 @@ from PIL import Image
 import os
 import os.path
 from glob import glob
-from torch import load, cat
-
+from torch import load, cat, device
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.pt')
+
+dev = device('cuda')
 
 def has_file_allowed_extension(filename, extensions):
     """Checks if a file is an allowed extension.
@@ -95,7 +96,7 @@ class DatasetFolder(VisionDataset):
         try:
             if self.features and not self.load_images:
                 # print("here1")
-                sample = cat((load(path).unsqueeze(0).detach(), load(path.replace("/features_scale_1/", "/features_scale_2/")).detach()), dim=0)
+                sample = cat((load(path).unsqueeze(0).detach().to(dev), load(path.replace("/features_scale_1/", "/features_scale_2/")).detach().to(dev)), dim=0)
 
             elif self.load_images and not self.features: # load only images
                 # print("here2")
@@ -108,7 +109,7 @@ class DatasetFolder(VisionDataset):
                 if self.transform is not None:
                     img = self.transform(img)
                 # features = cat(load(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt"))).unsqueeze(0).detach(), load(path.replace(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")).detach()), dim=0)
-                    features = cat((load(path.replace("/images/", "/features_scale_1/").replace(".jpg", ".pt")).unsqueeze(0).detach(), load(path.replace("/images/", "/features_scale_2/").replace(".jpg", ".pt")).detach()), dim=0)
+                    features = cat((load(path.replace("/images/", "/features_scale_1/").replace(".jpg", ".pt")).unsqueeze(0).detach().to(dev), load(path.replace("/images/", "/features_scale_2/").replace(".jpg", ".pt")).detach().to(dev)), dim=0)
                 sample=(img, features)
             else:
                 # print("here4")
