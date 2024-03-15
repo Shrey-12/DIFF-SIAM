@@ -123,6 +123,14 @@ Checkpoints are by default exported to the directory named output.
 
 ## 4. Evaluation
 To test a pretrained MAD-DDPM model run the following:
+ p.add_argument('--test-set', type=str, required=True, help='the testing set location')
+    p.add_argument('--image_branch_checkpoint', type=str, required=True, help='path to the checkpoint of the image branch')
+    p.add_argument('--features_branch_checkpoint', type=str, required=True, help='path to the checkpoint of the image branch')
+    p.add_argument('--config', type=str, required=True, help='the configuration file')
+    p.add_argument('--experiment_name', type=str, default='experiment', help='the name of the run')
+    p.add_argument('--batch-size', type=int, default=4, help='the batch size')
+    p.add_argument('--num-workers', type=int, default=8, help='the number of data loader workers')
+    p.add_argument('--output_dir', type=str, default='./output', help='output directory fo trained models and results')
 ```
 python test.py --test-set ./data/FRGC/ --image_branch_checkpoint output/experiment/checkpoints/model_image.pth --features_branch_checkpoint output/experiment/checkpoints/model_features.pth --config configs/casia_webface.json
 ```
