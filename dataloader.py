@@ -4,6 +4,7 @@ import os
 import os.path
 from glob import glob
 from torch import load, cat, device
+
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.pt')
 
 dev = device('cuda')
@@ -29,6 +30,7 @@ def is_image_file(filename):
 
 def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, features=None):
     samples = []
+    folder_counts={}
     if not ((extensions is None) ^ (is_valid_file is None)):
         raise ValueError("Both extensions and is_valid_file cannot be None or not None at the same time")
     if extensions is not None:
@@ -36,7 +38,7 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
             return has_file_allowed_extension(x, extensions) and os.path.isfile(x)
     if load_images:
         files = glob(os.path.join(dir, "images", "*", "*", "*"))
-        print(files[0])
+        # print(files[0])
     elif features and not load_images:
         files = glob(os.path.join(dir, "features_scale_1", "*", "*", "*"))
     else:
@@ -49,26 +51,45 @@ def make_dataset(dir, extensions=None, is_valid_file=None, load_images=None, fea
         # check if files exist/are valid
         if load_images and not features:
             if is_valid_file(path):
+                folder_name = os.path.dirname(path).split("/")[-1]
                 # print('2.!!!Heres the path I am trying to load :',path)
-                item = (path, target)
-                samples.append(item)
+                if folder_name not in folder_counts:
+                    folder_counts[folder_name] = 0
+
+                if folder_counts[folder_name] < 40:
+                    item = (path, target)
+                    samples.append(item)
+                    folder_counts[folder_name] += 1
         elif features and not load_images:
             if is_valid_file(path) and is_valid_file(path.replace("/features_scale_1/", "/features_scale_2/")):
                 # print('3.!!!Heres the path I am trying to load :',path)
-                item = (path, target)
-                samples.append(item)
+                folder_name = os.path.dirname(path).split("/")[-1]
+                # print("!!! folder name",folder_name)
+                if folder_name not in folder_counts:
+                    folder_counts[folder_name] = 0
+
+                if folder_counts[folder_name] < 40:
+                    item = (path, target)
+                    samples.append(item)
+                    folder_counts[folder_name] += 1
         elif load_images and features:
             # print("Is path valid 1:",is_valid_file(path), path)
             # print("Is path valid2 :",path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt"))
             # print("Is path valid 3:",path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt"))
             if is_valid_file(path) and is_valid_file(path.replace("/images/", "/features_scale_1/").replace(".jpg",".pt")) and is_valid_file(path.replace("/images/", "/features_scale_2/").replace(".jpg",".pt")):
-                print('4. !!!Heres the path I am trying to load :',path)
-                item = (path, target)
-                samples.append(item)
-        else:
-            continue
-    return samples
+                # print('4. !!!Heres the path I am trying to load :',path)
+                folder_name = os.path.dirname(path).split("/")[-1]
+                # print("!!! folder name",folder_name)
+                if folder_name not in folder_counts:
+                    folder_counts[folder_name] = 0
 
+                if folder_counts[folder_name] < 40:
+                    item = (path, target)
+                    samples.append(item)
+                    folder_counts[folder_name] += 1
+            else:
+                continue
+    return samples
 class DatasetFolder(VisionDataset):
 
     def __init__(self, root, loader, extensions=None, transform=None,
