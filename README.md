@@ -106,6 +106,21 @@ CUDA_VISIBLE_DEVICES=6 nohup python train.py --train-set ./data/CASIA-WebFace/ -
 ```
 Checkpoints are by default exported to the directory named output. 
 
+```
+ p.add_argument('--train-set', type=str, required=True, help='the training set location')
+    p.add_argument('--config', type=str, required=True, help='the configuration file')
+    p.add_argument('--branch', type=int, required=True, default=0, help='choose the branch you want to train or test: 1-image and 2-features')
+    p.add_argument('--experiment_name', type=str, default='experiment', help='the name of the run')
+    p.add_argument('--num_epochs', type=int, default=100, help='number of training epochs')
+    p.add_argument('--batch-size', type=int, default=1, help='the batch size')
+    p.add_argument('--num-workers', type=int, default=8, help='the number of data loader workers')
+    p.add_argument('--output_dir', type=str, default='./output', help='output directory fo trained models and results')
+    p.add_argument('--save-every', type=int, default=10, help='save every this many epochs')
+    p.add_argument('--resume', type=str, help='path to the checkpoint to resume from')
+    p.add_argument('--test-every', type=int, default=-1, help='evaluate model every this many epochs (value -1 is used for training without evaluation)')
+    p.add_argument('--test-set', type=str, default="", help='the testing set location, if you perform evaluation while training')
+```
+
 ## 4. Evaluation
 To test a pretrained MAD-DDPM model run the following:
 ```
