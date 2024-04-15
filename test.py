@@ -42,8 +42,10 @@ def main():
     ])
 
     test_set = ImageFolder(args.test_set, transform=tf, load_images=True, features=True)
+    print("test folder loaded")
     test_dl = data.DataLoader(test_set, args.batch_size, shuffle=False, drop_last=False,
                               num_workers=args.num_workers, persistent_workers=True)
+    print("test dataset loaded")
     ###########################################################################################
     # initialize the model
     inner_model_images = K.ImageDenoiserModelV1(c_in=config["model_image"]['input_channels'],
@@ -119,7 +121,7 @@ def main():
                 rec_features = (reals_features - x_0_features).view(x_0_features.size(0), x_0_features.size(1) * x_0_features.size(2) * x_0_features.size(3))
                 error_features = torch.mean(torch.pow(rec_features, 2), dim=1)
 
-                error = error_images + error_features
+                error = 1.2*error_images + 0.8*error_features
                 scores[sigma_id, batch_id * args.batch_size: batch_id * args.batch_size + error.size(0)] = error.reshape(error.size(0))
 
         labels = gt_labels.cpu()
