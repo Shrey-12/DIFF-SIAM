@@ -81,7 +81,8 @@ Images are expected to have one of the following image extensions: '.jpg'. Their
 
 ![image](https://github.com/Shrey-12/MAD-DDPM/assets/98189346/2989a362-c64b-4700-a397-9af913af5d79)
 
-MAD-DDPM is trained and tested on preprocessed datasets, where faces were first detected with RetinaFace, then cropped out with a margin of 5% of the detected bounding box height. Corresponding feature maps are extracted with a pretrained WideResNet. For more details please refer to the paper.
+MAD-DDPM is trained and tested on preprocessed datasets, where faces were first detected with RetinaFace, then cropped out with a margin of 5% of the detected bounding box height. Corresponding feature maps are extracted with a pretrained WideResNet/InceptionnetV1 pretrained on casia-webface. 
+```nohup CUDA_VISIBLE_DEVICES=2 python VGG_prenb.py > results/crows.log &```
 
 ## 3. Training
 To train the **image branch** MAD-DDPM on your dataset, run the following:
@@ -136,8 +137,9 @@ To test a pretrained MAD-DDPM model run the following:
 ```
 python test.py --test-set ./data/FRGC/ --image_branch_checkpoint output/experiment/checkpoints/model_image.pth --features_branch_checkpoint output/experiment/checkpoints/model_features.pth --config configs/casia_webface.json
 ```
-## 5. Citing MAD-DDPM
-If you find this code useful or you want to refer to the paper, please cite using the following BibTeX:
+
+## Acknowledgements
+This code is entirely based on
 ```
 @INPROCEEDINGS{ivanovska2023mad_ddpm,
   author={Ivanovska, Marija and Štruc, Vitomir},
@@ -146,9 +148,6 @@ If you find this code useful or you want to refer to the paper, please cite usin
   year={2023},
   doi={10.1109/IWBF57495.2023.10156877}}}
 ```
-
-## Acknowledgements
-This code is largely based on [k-diffusion](https://github.com/crowsonkb/k-diffusion).
 
   
 ## References
