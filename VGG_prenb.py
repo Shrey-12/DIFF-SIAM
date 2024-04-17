@@ -1,3 +1,4 @@
+
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
@@ -14,13 +15,16 @@ class CustomVGG(nn.Module):
     def __init__(self):
         super(CustomVGG, self).__init__()
         self.resnet = InceptionResnetV1(pretrained='casia-webface').to(device)
-        print("Here you are")
-        self.fc=nn.Sequential(nn.Linear(in_features=512,out_features=1024*14*14),nn.Flatten())
+        # Adjust the output size of the linear layer
+        self.fc = nn.Linear(in_features=512, out_features=1024*14*14)
 
     def forward(self, x):
         x = self.resnet(x)
         x = self.fc(x)
+        # Reshape the output tensor to (batch_size, 1024, 14, 14)
+        x = x.view(x.size(0), 1024, 14, 14)
         return x
+
 
 def preprocess_image(img, scale):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -43,10 +47,12 @@ def preprocess_image(img, scale):
 def save_features(features, image_paths):
     for i, feature in enumerate(features):
         image_name = os.path.basename(image_paths[i])
-        feature_path = f"data/FRLL/features_scale_1/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
-        print('f1 generated')
-        #torch.save(feature, feature_path)
- 
+        feature_path = f"data/CASIA-WebFace/features_scale_1/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
+        if not os.path.exists(feature_path):
+            torch.save(feature, feature_path)
+        pt_tensor = torch.load(feature_path)
+        print(f"Size 1: {image_name}.pt {pt_tensor.shape}")
+
 def extract_patches(image_tensor):
     kernel_size, stride = 224, 224
     patches = image_tensor.unfold(2, kernel_size, stride).unfold(1, kernel_size, stride)
@@ -54,9 +60,9 @@ def extract_patches(image_tensor):
     return patches
 
 model = CustomVGG().to(device)
-print('model loaded')
+#print('model loaded')
 
-image_dir = "data/FRLL/images/bonafide/raw/"
+image_dir = "data/CASIA-WebFace/images/bonafide/raw/"
 image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith((".jpg", ".jpeg", ".png"))]
 
 batch_size = 6
@@ -65,28 +71,30 @@ batch_scale_1 = []
 
 
 
-for img_path in image_paths[:10]:
+for img_path in image_paths:
     img = cv2.imread(img_path)
     image_name = os.path.basename(img_path)
     preprocessed_img_scale_1 = preprocess_image(img, 1)
     preprocessed_img_scale_2 = preprocess_image(img, 2)
-    
+
     if preprocessed_img_scale_1 is not None:
         batch_scale_1.append(preprocessed_img_scale_1)
 
     if preprocessed_img_scale_2 is not None:
-        feature_path = f"data/FRLL/features_scale_2/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
-        patches = extract_patches(preprocessed_img_scale_2)
-        patches = (patches,)
-        patches = torch.stack(patches,dim=0).squeeze(0)
-        feature_scale_2 = model(patches)
-        print('f2 generated')
-        #torch.save(feature_scale_2,feature_path)
-        
+        feature_path = f"data/CASIA-WebFace/features_scale_2/bonafide/raw/{image_name.replace('.jpg', '.pt')}"
+        if not os.path.exists(feature_path):
+            patches = extract_patches(preprocessed_img_scale_2)
+            patches = (patches,)
+            patches = torch.stack(patches,dim=0).squeeze(0)
+            feature_scale_2 = model(patches)
+            torch.save(feature_scale_2,feature_path)
+        pt_tensor = torch.load(feature_path)
+        print(f"Size 2:{image_name}.pt {pt_tensor.shape}")
+
     if len(batch_scale_1) == batch_size:
         batches_scale_1.append(batch_scale_1)
         batch_scale_1 = []
-    
+
 
 if len(batch_scale_1) > 0:
     batches_scale_1.append(batch_scale_1)
